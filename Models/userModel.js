@@ -30,10 +30,10 @@ const UserSchema = mongoose.Schema({
     followings: [],
     
     },
-
     {
         timestamps: true,
     }
 );
+
 const UserModel = mongoose.model("Users", UserSchema);
 export default UserModel;

@@ -19,7 +19,7 @@ app.use(cors());
 app.get('/', (req, res) => res.send('app is running'));
 app.use('/auth', AuthRoute);
 app.use('/user', UserRoute);
-app.use('/post', PostRoute);
+app.use('/posts', PostRoute);
 
 mongoose.connect("mongodb+srv://abdullah:0G4X35ZgyRkI8SXl@cluster0.4wz1lff.mongodb.net/?retryWrites=true&w=majority",  {useNewUrlParser: true, useUnifiedTopology: true,})
 .then((res) => app.listen(process.env.PORT, () => {
