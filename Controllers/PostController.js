@@ -8,7 +8,7 @@ export const createPost = async (req, res) => {
     try {
         const newPost = await new PostModel(req?.body);
         newPost.save();
-        res.status(200).json("Post Created!");
+        res.status(200).json(newPost);
 
     } catch (error) {
         res.status(500).json({message: error?.message})
@@ -67,6 +67,70 @@ export const deletePost = async (req, res) => {
 // like and dislike post
 
 export const likePost = async (req, res) => {
-    const {id} = req.params;
-    
+    const {id} = req.params; // postId
+    const {userId} = req.body;
+    try {
+        const post = await PostModel.findById(id);
+        
+        // if (post)
+        if (!post?.likes?.includes(userId)) {
+            await post.updateOne({$push: {likes: userId}});
+            console.log(post, 'dddddd')
+            const updatedpost = await PostModel.findById(id);
+            res.status(200).json(updatedpost)
+        } else {
+            await post.updateOne({$pull: {likes: userId}});
+            const updatedpost = await PostModel.findById(id);
+            res.status(200).json(updatedpost)
+        }
+    } catch (error) {
+        res.status(500).json({message: error?.message})
+    }
 }
+
+
+
+
+// Get Timeline Posts
+ export const getTimeLinePosts = async (req, res) => {
+    const {id} = req.params; // userId
+    try {
+        const currentUserPosts = await PostModel.find({userId: id});
+        const followingPosts = await UserModel.aggregate([
+                {$match: {
+                    _id: new mongoose.Types.ObjectId(id), // that give us a single document and that document will contain our user_id and itts id field
+                },},
+                {$lookup: {
+                    from: "posts",
+                    localField: "followings",
+                    foreignField: "userId",
+                    as: "followingPosts",
+                },},
+
+                {
+                    $project: { /// which fields do you want to return as a result of the aggregation
+                        followingPosts: 1,
+                        _id: 0,
+                    }
+                }
+                
+
+        ]);
+        const allPosts = [...currentUserPosts, ...followingPosts]
+        res.status(200).json(currentUserPosts.concat(...followingPosts[0]['followingPosts']).sort((a,b) => b?.createdAt - a?.createdAt));
+        // sort it in a descending order
+        // we can use 
+        //  followingPosts.followings.map((user) => {
+        //     console.log(user)
+        //  })
+
+    } catch (error) {
+        res.status(500).json({message: error?.message})
+    }
+ }
+
+
+
+
+
+

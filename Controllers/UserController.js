@@ -1,8 +1,10 @@
 import UserModel from "../Models/userModel.js";
 import bcrypt from 'bcrypt';
+import jwt from "jsonwebtoken";
 export const getUser = async (req, res) => {
     
     const {id} = req.params;
+    console.log(id)
     // res.status(200).json(id);
     try {
         const user = await UserModel.findById(id);
@@ -23,9 +25,9 @@ export const getUser = async (req, res) => {
 // update a user
 export const updateUser = async (req, res) => {
     const {id} = req.params; // the id of the user that should be updated in the response
-    const {currentUserId, currentUserAdminStatus, password} = req.body;
+    const {_id, currentUserAdminStatus, password} = req.body;
 
-    if (id == currentUserId || currentUserAdminStatus) {
+    if (id == _id) {
         try {
             // hashing the password before updating it
             if (password) {
@@ -33,7 +35,11 @@ export const updateUser = async (req, res) => {
                 req.body.password = await bcrypt.hash(password, salt);
             }
             const user = await UserModel.findByIdAndUpdate(id, req?.body, {new: true});
-            res.status(200).json(user);
+            const token = await jwt.sign({
+                username: user?.username,
+                id: user?._id,
+            }, "secret_key", {expiresIn: '1h',});
+            res.status(200).json({...user?._doc, token});
         } catch (error) {
 
             res.status(500).json({message: error?.message});
@@ -62,7 +68,7 @@ export const deleteUser = async (req, res) => {
 
 export const followUser = async (req, res) => {
     const { id } = req.params;
-    const {currentUserId} = req.body;
+    const {userId: currentUserId} = req.body;
     if (currentUserId === id) {
         res.status(403).json("Action forbidden");
     } else {
@@ -94,7 +100,7 @@ export const followUser = async (req, res) => {
 
 export const unFollowUser = async (req, res) => {
     const { id } = req.params;
-    const {currentUserId} = req.body;
+    const {userId: currentUserId} = req.body;
     if (currentUserId === id) {
         res.status(403).json("Action forbidden");
     } else {
@@ -119,6 +125,26 @@ export const unFollowUser = async (req, res) => {
         }
     }
 }
+
+
+
+// getAllUsers 
+export const getAllUsers = async (req, res) => {
+    // return all users in on array
+    try {
+        const allUsers = await UserModel.find();
+        let users = allUsers.map((user) => {
+            const {password, ...otherDetails} = user?._doc;
+            return otherDetails;
+        });
+        res.status(200).json(users);
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({message: error?.message});
+    }
+}
+
 
 
 
