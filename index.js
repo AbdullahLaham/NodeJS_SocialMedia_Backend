@@ -30,7 +30,7 @@ app.use('/user', UserRoute);
 app.use('/post', PostRoute);
 app.use('/upload', UploadRoute);
 app.use('/chat', ChatRoute);
-app.use('/message', MessageRoute)
+app.use('/messages', MessageRoute)
 
 mongoose.connect("mongodb+srv://abdullah:0G4X35ZgyRkI8SXl@cluster0.4wz1lff.mongodb.net/?retryWrites=true&w=majority",  {useNewUrlParser: true, useUnifiedTopology: true,})
 .then((res) => app.listen(process.env.PORT, () => {
