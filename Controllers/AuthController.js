@@ -10,14 +10,16 @@ export const signup = async (req, res) => {
     // const {username, password, firstname, lastname} = req.body;
     
 
-    const salt = await bcrypt.genSalt(10); // the amount of how much we want to alter the password by hashing
-    const hashedPass = await bcrypt.hash(req.body.password, salt);
-    req.body.password = hashedPass;
-    const {username} = req.body;
-
-    const newUser = new UserModel(req?.body);
+    
    
     try {
+        const salt = await bcrypt.genSalt(10); // the amount of how much we want to alter the password by hashing
+        const hashedPass = await bcrypt.hash(req.body.password, salt);
+        req.body.password = hashedPass;
+        const {username} = req.body;
+
+        const newUser = new UserModel(req?.body);
+
 
         const oldUser = await UserModel.findOne({ username });
 

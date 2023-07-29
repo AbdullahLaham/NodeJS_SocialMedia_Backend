@@ -49,9 +49,9 @@ export const updatePost = async (req, res) => {
 export const deletePost = async (req, res) => {
     const {id} = req.params;
     const {userId} = req.body;
-    const post = await PostModel.findById(id);
+    
     try {
-
+        const post = await PostModel.findById(id);
         if (userId == post?.userId) {
             await post.deleteOne();
             res.status(200).json("Post Deleted Successfully");

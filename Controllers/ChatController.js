@@ -1,10 +1,11 @@
 import ChatModel from "../Models/chatSchema.js";
 export const createChat = async (req, res) => {
-    const {senderId, receiverId} = req.body;
-    const newChat = new ChatModel({
-        members: [senderId, receiverId],
-    });
+    
     try {
+        const {senderId, receiverId} = req.body;
+        const newChat = new ChatModel({
+            members: [senderId, receiverId],
+        });
         const result = await newChat.save();
         res.status(200).json(result);
     } catch (error) {
