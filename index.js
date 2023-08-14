@@ -15,26 +15,27 @@ import cors from 'cors';
 const app = express();
 
 // to serve images for public
-// app.use(express.static('public'));
-// app.use('/images', express.static("images"));
+app.use(express.static('public'));
+app.use('/images', express.static("images"));
 
 
-// dotenv.config();
-// app.use(bodyParser.json({"limit": "30mb", extended: true})); // 30mb because we will send images
-// app.use(bodyParser.urlencoded({"limit": "30mb", extended: true}));
-// app.use(cors());
-// // usage of routes
-app.get('/', (req, res) => res.send('app is running'));
-// app.use('/auth', AuthRoute);
-// app.use('/user', UserRoute);
-// app.use('/post', PostRoute);
-// app.use('/upload', UploadRoute);
-// app.use('/chat', ChatRoute);
-// app.use('/messages', MessageRoute)
+dotenv.config();
+app.use(bodyParser.json({"limit": "30mb", extended: true})); // 30mb because we will send images
+app.use(bodyParser.urlencoded({"limit": "30mb", extended: true}));
+app.use(cors());
+// usage of routes
+app.use('/', (req, res) => res.send('app is running'));
+app.use('/auth', AuthRoute);
+app.use('/user', UserRoute);
+app.use('/post', PostRoute);
+app.use('/upload', UploadRoute);
+app.use('/chat', ChatRoute);
+app.use('/messages', MessageRoute);
 
-// mongoose.connect("mongodb+srv://abdullah:7KaGjijLsSAWfNxo@cluster0.4wz1lff.mongodb.net/",  {useNewUrlParser: true, useUnifiedTopology: true,})
-// .then((res) => app.listen(process.env.PORT, () => {
-//     console.log(`app is listening on port ${process.env.PORT}`);
-// }))
-// .catch((error) => console.log(error));
+
+mongoose.connect("mongodb+srv://abdullah:BsEa2cBkPpKj9HyX@cluster0.4wz1lff.mongodb.net/",  {useNewUrlParser: true, useUnifiedTopology: true,})
+.then((res) => app.listen(process.env.PORT, () => {
+    console.log(`app is listening on port ${process.env.PORT}`);
+}))
+.catch((error) => console.log(error));
 
